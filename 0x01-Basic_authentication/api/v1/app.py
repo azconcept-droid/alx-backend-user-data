@@ -13,6 +13,20 @@ app = Flask(__name__)
 app.register_blueprint(app_views)
 CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 
+auth = None
+if getenv('AUTH_TYPE') == "auth":
+    from api.v1.auth.auth import Auth
+    auth = Auth()
+
+
+@app.before_request
+def request_filter() -> str:
+    """ Filter request
+    """
+
+    if auth is None:
+        return None
+
 
 @app.errorhandler(401)
 def not_authorized(error) -> str:
