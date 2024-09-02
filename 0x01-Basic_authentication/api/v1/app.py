@@ -20,12 +20,17 @@ if getenv('AUTH_TYPE') == "auth":
 
 
 @app.before_request
-def request_filter() -> str:
+def request_filter():
     """ Filter request
     """
 
     if auth is None:
         return None
+    excluded_paths = ['/api/v1/status/', '/api/v1/unauthorized/', '/api/v1/forbidden/']
+    if auth.require_auth(request.path, excluded_paths):
+        pass
+    else:
+        abort(401)
 
 
 @app.errorhandler(401)
