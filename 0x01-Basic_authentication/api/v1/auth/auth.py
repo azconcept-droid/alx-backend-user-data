@@ -9,8 +9,20 @@ class Auth:
     """ Authentication class """
 
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
-        """ Method thAT enforce auth requirement
+        """ Method that determine route that is authorized
         """
+        if path is None:
+            return True
+        # append / to path
+        if path[-1] != '/':
+            path = path + '/'
+        
+        if excluded_paths is None or len(excluded_paths) == 0:
+            return True
+
+        if path not in excluded_paths:
+            return True
+
         return False
 
     def authorization_header(self, request=None) -> str:
