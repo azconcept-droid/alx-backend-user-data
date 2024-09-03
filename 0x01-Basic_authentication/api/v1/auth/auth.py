@@ -21,10 +21,18 @@ class Auth:
             return True
 
         for route in excluded_paths:
+            # allow wildcard /*
+            if route[-1] == '*':
+                wild_route = route[:len(route) - 1]
+                if wild_route == path[:len(route) - 1]:
+                    return False
+            # append / to route
+            if route[-1] != '/':
+                route = route + '/'
             if route == path:
-                return True
+                return False
 
-        return False
+        return True
 
     def authorization_header(self, request=None) -> str:
         """ Check client request header"""
