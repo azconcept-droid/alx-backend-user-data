@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
 """ Basic Authentication module
 """
-from auth import Auth
+from api.v1.auth.auth import Auth
+from flask import request
 
 
 class BasicAuth(Auth):
     """ Basic auth class """
-    pass
+
+    def extract_base64_authorization_header(self,
+                                            authorization_header: str) -> str:
+        """ extract base64 code """
+        if authorization_header is None:
+            return None

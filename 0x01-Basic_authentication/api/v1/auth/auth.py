@@ -20,8 +20,9 @@ class Auth:
         if excluded_paths is None or len(excluded_paths) == 0:
             return True
 
-        if path not in excluded_paths:
-            return True
+        for route in excluded_paths:
+            if route == path:
+                return True
 
         return False
 
