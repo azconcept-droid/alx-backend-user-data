@@ -16,6 +16,17 @@ def index():
     return jsonify({"message": "Bienvenue"})
 
 
+@app.route("/profile")
+def profile():
+    """Profile page route"""
+    session_id = request.cookies.get('session_id')
+    user = AUTH.get_user_from_session_id(session_id)
+    if user:
+        return jsonify({"email": user.email}), 200
+
+    abort(403)
+
+
 @app.route("/users", methods=['POST'])
 def users() -> str:
     """ register new user
@@ -52,10 +63,9 @@ def login() -> str:
     password = request.form.get('password')
     if AUTH.valid_login(email, password):
         session_id = AUTH.create_session(email)
-        response = make_response("Cookie set using headers!")
-        value = 'session_id={}; Path=/'.format(session_id)
-        response.headers['Set-Cookie'] = value
-        return jsonify({"email": email, "message": "logged in"})
+        response = jsonify({"email": email, "message": "logged in"})
+        response.set_cookie('session_id', session_id)
+        return response
 
     abort(401)
 
