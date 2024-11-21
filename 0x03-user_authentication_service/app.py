@@ -2,7 +2,7 @@
 """
 Route module for the API
 """
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, abort, make_response
 from auth import Auth
 
 app = Flask(__name__)
@@ -18,7 +18,7 @@ def index():
 @app.route("/users", methods=['POST'])
 def users():
     """ register new user
-    POST /api/v1/users/
+    POST /api/v1/users
     JSON body:
       - email
       - password
@@ -27,13 +27,35 @@ def users():
       - 400 if can't create the new User
     """
     try:
-        data = request.get_json()
-        email = data.get('email')
-        password = data.get('password')
+        email = request.form.get('email')
+        password = request.form.get('password')
         user = AUTH.register_user(email, password)
         return jsonify({"email": user.email, "message": "user created"})
     except ValueError:
         return jsonify({"message": "email already registered"}), 400
+
+
+@app.route("/sessions", methods=['POST'])
+def login():
+    """ login user session
+    POST /api/v1/sessions
+    JSON body:
+      - email
+      - password
+    Return:
+      - User object JSON represented
+      - 400 if can't create the new User
+    """
+
+    email = request.form.get('email')
+    password = request.form.get('password')
+    if AUTH.valid_login(email, password):
+        session_id = AUTH.create_session(email)
+        response = make_response()
+        response.set_cookie('session_id', session_id)
+        return jsonify({"email": email, "message": "logged in"})
+
+    abort(401)
 
 
 if __name__ == "__main__":
