@@ -45,20 +45,20 @@ class DB:
         """Find user by arbitrary input data arg"""
         for key in kwargs:
             if key == 'email':
-                query = self._session.query(User)\
+                user = self._session.query(User)\
                     .filter_by(email=kwargs[key])\
                     .first()
             elif key == 'id':
-                query = self._session.query(User)\
+                user = self._session.query(User)\
                   .filter_by(id=kwargs[key])\
                   .first()
             else:
                 raise InvalidRequestError
 
-        if query is None:
+        if user is None:
             raise NoResultFound
 
-        return query
+        return user
 
     def update_user(self, user_id: str, **kwargs) -> None:
         """Update user info"""
