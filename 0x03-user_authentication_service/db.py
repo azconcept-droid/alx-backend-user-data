@@ -68,6 +68,8 @@ class DB:
                 user.hashed_password = kwargs['hashed_password']
             elif key == 'email':
                 user.email = kwargs['email']
+            elif key == 'session_id':
+                user.session_id = kwargs['session_id']
             else:
                 raise ValueError
         self._session.commit()
