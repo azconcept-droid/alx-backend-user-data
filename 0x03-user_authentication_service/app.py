@@ -52,7 +52,8 @@ def login() -> str:
     if AUTH.valid_login(email, password):
         session_id = AUTH.create_session(email)
         response = make_response("Cookie set using headers!")
-        response.headers['Set-Cookie'] = 'session_id={}; Path=/'.format(session_id)
+        value = 'session_id={}; Path=/'.format(session_id)
+        response.headers['Set-Cookie'] = value
         return jsonify({"email": email, "message": "logged in"})
 
     abort(401)
