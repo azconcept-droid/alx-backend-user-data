@@ -43,14 +43,33 @@ class DB:
 
     def find_user_by(self, **kwargs) -> User:
         """Find user by arbitrary input data arg"""
-        if 'email' in kwargs:
-            query = self._session.query(User)\
-                .filter(User.email.like(kwargs['email']))\
-                .order_by(User.id)
-        else:
-            raise InvalidRequestError
+        for key in kwargs:
+            if key == 'email':
+                query = self._session.query(User)\
+                    .filter_by(email=kwargs[key])\
+                    .first()
+            elif key == 'id':
+                query = self._session.query(User)\
+                  .filter_by(id=kwargs[key])\
+                  .first()
+            else:
+                raise InvalidRequestError
 
-        if query.first() is None:
+        if query is None:
             raise NoResultFound
 
-        return query.first()
+        return query
+
+    def update_user(self, user_id: str, **kwargs) -> None:
+        """Update user info"""
+        for key in kwargs:
+            user = self.find_user_by(id=user_id)
+            if key == 'hashed_password':
+                user.hashed_password = kwargs['hashed_password']
+            elif key == 'email':
+                user.email = kwargs['email']
+            else:
+                raise ValueError
+        self._session.commit()
+
+        return None
