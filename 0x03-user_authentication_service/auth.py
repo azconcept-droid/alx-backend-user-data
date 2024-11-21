@@ -49,6 +49,6 @@ def _hash_password(password: str) -> bytes:
     return bcrypt.hashpw(passwd, salt)
 
 
-def _generate_uuid() -> uuid:
+def _generate_uuid() -> str:
     """Generate uuid"""
-    return uuid.uuid1()
+    return uuid.uuid4()
