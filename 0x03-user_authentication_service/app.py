@@ -16,7 +16,7 @@ def index():
 
 
 @app.route("/users", methods=['POST'])
-def users():
+def users() -> str:
     """ register new user
     POST /api/v1/users
     JSON body:
@@ -36,7 +36,7 @@ def users():
 
 
 @app.route("/sessions", methods=['POST'])
-def login():
+def login() -> str:
     """ login user session
     POST /api/v1/sessions
     JSON body:
@@ -51,8 +51,8 @@ def login():
     password = request.form.get('password')
     if AUTH.valid_login(email, password):
         session_id = AUTH.create_session(email)
-        response = make_response()
-        response.set_cookie('session_id', session_id)
+        response = make_response("Cookie set using headers!")
+        response.headers['Set-Cookie'] = 'session_id={}; Path=/'.format(session_id)
         return jsonify({"email": email, "message": "logged in"})
 
     abort(401)

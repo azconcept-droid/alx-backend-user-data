@@ -52,6 +52,10 @@ class DB:
                 user = self._session.query(User)\
                   .filter_by(id=kwargs[key])\
                   .first()
+            elif key == 'session_id':
+                user = self._session.query(User)\
+                  .filter_by(session_id=kwargs[key])\
+                  .first()
             else:
                 raise InvalidRequestError
 
