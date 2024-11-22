@@ -56,6 +56,10 @@ class DB:
                 user = self._session.query(User)\
                   .filter_by(session_id=kwargs[key])\
                   .first()
+            elif key == 'reset_token':
+                user = self._session.query(User)\
+                  .filter_by(reset_token=kwargs[key])\
+                  .first()
             else:
                 raise InvalidRequestError
 
