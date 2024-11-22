@@ -74,6 +74,8 @@ class DB:
                 user.email = kwargs['email']
             elif key == 'session_id':
                 user.session_id = kwargs['session_id']
+            elif key == 'reset_token':
+                user.reset_token = kwargs['reset_token']
             else:
                 raise ValueError
         self._session.commit()
