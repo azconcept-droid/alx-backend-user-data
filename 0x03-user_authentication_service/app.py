@@ -55,7 +55,7 @@ def login() -> str:
       - email
       - password
     Return:
-      - User object JSON represented
+      - response object JSON represented
       - 400 if can't create the new User
     """
 
@@ -84,6 +84,24 @@ def logout() -> str:
         AUTH.destroy_session(user.id)
         return redirect(url_for('index'))
     else:
+        abort(403)
+
+
+@app.route("/reset_password", methods=['POST'])
+def get_reset_password_token():
+    """ request for password reset
+    POST /api/v1/reset_password
+    JSON body:
+      - email
+    Return:
+      - reset_token
+      - 403 if email not found
+    """
+    email = request.form.get('email')
+    try:
+        token = AUTH.get_reset_password_token(email)
+        return jsonify({"email": email, "reset_token": token}), 200
+    except ValueError:
         abort(403)
 
 
