@@ -5,6 +5,8 @@ Log filter
 from typing import List
 import re
 import logging
+import mysql.connector
+from os import getenv
 
 
 PII_FIELDS = ("name", "email", "phone", "ssn", "password")
@@ -51,3 +53,20 @@ def get_logger() -> logging.Logger:
     logger.addHandler(handler)
 
     return logger
+
+
+def get_db() -> mysql.connector.connection.MySQLConnection:
+    """ get db connection """
+
+    user = getenv("PERSONAL_DATA_DB_USERNAME", "root")
+    password = getenv("PERSONAL_DATA_DB_PASSWORD", "")
+    host = getenv("PERSONAL_DATA_DB_HOST", "localhost")
+    db_name = getenv("PERSONAL_DATA_DB_NAME")
+
+    connector = mysql.connector.connect(
+        user=user,
+        password=password,
+        host=host,
+        database=db_name
+      )
+    return connector
