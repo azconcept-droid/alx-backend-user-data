@@ -63,10 +63,24 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
     host = getenv("PERSONAL_DATA_DB_HOST", "localhost")
     db_name = getenv("PERSONAL_DATA_DB_NAME")
 
-    connector = mysql.connector.connect(
+    return mysql.connector.connect(
         user=user,
         password=password,
         host=host,
         database=db_name
       )
-    return connector
+
+
+def main():
+    """ main """
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM users;")
+    logger = get_logger()
+    for row in cursor:
+        message = ""
+        for field in row:
+            message += f"{field};"
+        logger.info(message)
+    cursor.close()
+    db.close()
